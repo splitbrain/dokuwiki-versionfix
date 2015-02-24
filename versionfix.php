@@ -1,5 +1,18 @@
 #!/usr/bin/php
 <?php
+/**
+ * This tool will check the version of the given plugin as set on the plugin's page at dokuwiki.org
+ * and in the plugin's plugin.info.txt. It also checks the date of latest (non-translation tool) commit.
+ * It then upgrades the plugin page and plugin.info.txt accordingly.
+ * 
+ * Credentials for dokuwiki.org and github are stored in ~/.dwversionfix.conf. The file is created with
+ * sample date on first use.
+ * 
+ * Check https://www.dokuwiki.org/devel:badextensions to see which of you plugins need an update.
+ * 
+ * This tool is just meant for quick updating where nothing much has changed. You should always ensure
+ * that the documentation on the plugin page matches with your recent development.
+ */
 if(!defined('DOKU_INC')) define('DOKU_INC', realpath(dirname(__FILE__) . '/../') . '/');
 define('NOSESSION', 1);
 require_once(DOKU_INC . 'inc/init.php');
