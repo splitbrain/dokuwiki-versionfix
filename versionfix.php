@@ -1,6 +1,8 @@
 #!/usr/bin/php
 <?php
 /**
+ * Install this file to you DokuWiki bin/ directory
+ *
  * This tool will check the version of the given plugin as set on the plugin's page at dokuwiki.org
  * and in the plugin's plugin.info.txt. It also checks the date of latest (non-translation tool) commit.
  * It then upgrades the plugin page and plugin.info.txt accordingly.
