@@ -31,6 +31,8 @@ class VersionFixCLI extends DokuCLI {
     protected $github_user = '';
     protected $github_key = '';
 
+    protected $dryrun = false;
+
     /**
      * Register options and arguments on the given $options object
      *
@@ -41,6 +43,8 @@ class VersionFixCLI extends DokuCLI {
         $options->setHelp(
             "Update the version of a plugin or template"
         );
+
+        $options->registerOption('dry-run', 'Don\'t actually execute any changes', 'n');
 
         $options->registerArgument(
             'extension|email',
@@ -60,6 +64,8 @@ class VersionFixCLI extends DokuCLI {
      */
     protected function main(DokuCLI_Options $options) {
         $this->loadCredentials();
+
+        $this->dryrun = $options->getOpt('dry-run', false);
 
         $arg = array_shift($options->args);
         if(strpos($arg, '@') !== false) {
@@ -265,6 +271,7 @@ class VersionFixCLI extends DokuCLI {
      * @param string $content The new content
      */
     protected function updatePage($page, $content) {
+        if($this->dryrun) return;
         $http = new DokuHTTPClient();
 
         $data = array(
@@ -309,6 +316,8 @@ class VersionFixCLI extends DokuCLI {
      * @param string $date The new date to set
      */
     protected function updateGithub($user, $repo, $is_template, $search, $date) {
+        if($this->dryrun) return;
+
         $http = new HTTPClient();
         $http->headers['Accept'] = 'application/vnd.github.v3+json';
         $http->user = $this->github_user;
@@ -383,6 +392,7 @@ class VersionFixCLI extends DokuCLI {
         foreach($commits as $commit) {
             if(preg_match('/^Merge/i', $commit['commit']['message'])) continue; // skip merges;
             if($commit['commit']['committer']['email'] == 'translate@dokuwiki.org') continue; //skip translations
+            if(preg_match('/^Version upped/i', $commit['commit']['message'])) continue; // skip version ups;
 
             return substr($commit['commit']['author']['date'], 0, 10);
         }
