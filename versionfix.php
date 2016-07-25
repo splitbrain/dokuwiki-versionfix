@@ -28,8 +28,8 @@ class VersionFixCLI extends DokuCLI {
 
     protected $dokuwiki_user = '';
     protected $dokuwiki_pass = '';
-    protected $github_user = '';
-    protected $github_key = '';
+    protected $github_user   = '';
+    protected $github_key    = '';
 
     protected $dryrun = false;
 
@@ -44,13 +44,14 @@ class VersionFixCLI extends DokuCLI {
             "Update the version of a plugin or template"
         );
 
+        $options->registerOption('update', 'Update this script end exit', 'u');
         $options->registerOption('dry-run', 'Don\'t actually execute any changes', 'n');
 
         $options->registerArgument(
             'extension|email',
-            'The name of the extension to update. Templates have to be prefixed with \'template:\'. '.
+            'The name of the extension to update. Templates have to be prefixed with \'template:\'. ' .
             'You can also provide your email address and the tool will check all your extensions.',
-            true
+            false
         );
     }
 
@@ -67,6 +68,15 @@ class VersionFixCLI extends DokuCLI {
 
         $this->dryrun = $options->getOpt('dry-run', false);
 
+        if($options->getOpt('update')) {
+            $this->selfUpdate();
+            exit(0);
+        }
+
+        if(!$options->args) {
+            echo $options->help();
+            exit(0);
+        }
         $arg = array_shift($options->args);
         if(strpos($arg, '@') !== false) {
             $this->fixAllVersions($arg); // assume it's an email
@@ -181,7 +191,7 @@ class VersionFixCLI extends DokuCLI {
             $this->error('Can\'t update bundled extensions');
             return false;
         }
-        if(!$repoversion){
+        if(!$repoversion) {
             $this->error('No current version of this extension in plugin repository. Make sure it\'s listed.');
             return false;
         }
@@ -364,6 +374,27 @@ class VersionFixCLI extends DokuCLI {
             $this->fatal('Failed to talk to github API for updating file.');
         }
         $this->success('Updated ' . $infotxt . ' at github.');
+    }
+
+    /**
+     * Update this script with the latest version in the gist
+     */
+    protected function selfUpdate() {
+        if($this->dryrun) return;
+        $http = new HTTPClient();
+
+        $file = $http->get('https://gist.githubusercontent.com/splitbrain/a002268d74189c758b7e/raw/versionfix.php');
+        if(!$file) {
+            $this->error($http->error);
+            $this->fatal('Failed to download script.');
+        }
+
+        $ok = file_put_contents(__FILE__, $file);
+        if($ok === false) {
+            $this->fatal('Failed to write to ' . __FILE__);
+        }
+
+        $this->success('Updated ' . __FILE__);
     }
 
     /**
