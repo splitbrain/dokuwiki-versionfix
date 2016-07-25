@@ -383,7 +383,7 @@ class VersionFixCLI extends DokuCLI {
         if($this->dryrun) return;
         $http = new HTTPClient();
 
-        $file = $http->get('https://gist.githubusercontent.com/splitbrain/a002268d74189c758b7e/raw/versionfix.php');
+        $file = $http->get('https://gist.githubusercontent.com/splitbrain/a002268d74189c758b7e/raw/versionfix.php?t='.time());
         if(!$file) {
             $this->error($http->error);
             $this->fatal('Failed to download script.');
