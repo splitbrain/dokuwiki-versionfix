@@ -44,12 +44,11 @@ class DokuwikiClient
             ->send();
         $data = json_decode($response->getBody()->getContents(), true);
 
-
         $extensions = array();
         foreach ($data as $result) {
             if ($result['bundled']) continue;
-            if ($result['lastupdate']) continue;
-            if ($result['sourcerepo']) continue;
+            if (!$result['lastupdate']) continue;
+            if (!$result['sourcerepo']) continue;
 
             // match github repo
             if (!preg_match('/github\.com\/([^\/]+)\/([^\/]+)/i', $result['sourcerepo'], $m)) {
@@ -98,6 +97,8 @@ class DokuwikiClient
      */
     public function write($page, $content)
     {
+        die('disabled dokuwiki');
+
         $data = array(
             'id' => $page,
             'do' => 'edit',
@@ -144,22 +145,23 @@ class DokuwikiClient
      * @param bool $lower
      * @return array
      */
-    public static function linesToHash($lines, $lower=false) {
+    public static function linesToHash($lines, $lower = false)
+    {
         $conf = array();
         // remove BOM
-        if (isset($lines[0]) && substr($lines[0],0,3) == pack('CCC',0xef,0xbb,0xbf))
-            $lines[0] = substr($lines[0],3);
-        foreach ( $lines as $line ) {
+        if (isset($lines[0]) && substr($lines[0], 0, 3) == pack('CCC', 0xef, 0xbb, 0xbf))
+            $lines[0] = substr($lines[0], 3);
+        foreach ($lines as $line) {
             //ignore comments (except escaped ones)
-            $line = preg_replace('/(?<![&\\\\])#.*$/','',$line);
-            $line = str_replace('\\#','#',$line);
+            $line = preg_replace('/(?<![&\\\\])#.*$/', '', $line);
+            $line = str_replace('\\#', '#', $line);
             $line = trim($line);
-            if(empty($line)) continue;
-            $line = preg_split('/\s+/',$line,2);
+            if (empty($line)) continue;
+            $line = preg_split('/\s+/', $line, 2);
             // Build the associative array
-            if($lower){
+            if ($lower) {
                 $conf[strtolower($line[0])] = $line[1];
-            }else{
+            } else {
                 $conf[$line[0]] = $line[1];
             }
         }

@@ -58,6 +58,7 @@ class GithubClient
      */
     public function write($endpoint, $data)
     {
+        die('disabled github');
         $response = Client::request($this->apibase . $endpoint, 'POST', $this->options)
             ->withJson($data)
             ->send();

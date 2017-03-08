@@ -52,7 +52,7 @@ class VersionFixCLI extends CLI
         $args = $options->getArgs();
         $arg = array_shift($args);
         $extensions = DokuwikiClient::getRepoData($arg);
-        $this->info('found '.count($extensions).' matching extensions');
+        $this->info('found ' . count($extensions) . ' matching extensions');
         foreach ($extensions as $extension) {
             $this->fixVersion($extension);
         }
@@ -101,7 +101,6 @@ class VersionFixCLI extends CLI
 
         $this->credentials = $creds;
     }
-
 
 
 }
