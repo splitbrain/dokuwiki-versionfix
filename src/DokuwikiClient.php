@@ -97,8 +97,6 @@ class DokuwikiClient
      */
     public function write($page, $content)
     {
-        die('disabled dokuwiki');
-
         $data = array(
             'id' => $page,
             'do' => 'edit',

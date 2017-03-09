@@ -2,6 +2,7 @@
 <?php
 use splitbrain\DokuWikiVersionFix\DokuwikiClient;
 use splitbrain\DokuWikiVersionFix\Extension;
+use splitbrain\DokuWikiVersionFix\Tags;
 use splitbrain\phpcli\CLI;
 use splitbrain\phpcli\Options;
 
@@ -67,6 +68,9 @@ class VersionFixCLI extends CLI
     {
         $extension = new Extension($this, $repoinfo, $this->credentials);
         $extension->fixVersion();
+
+        $tags = new Tags($this, $repoinfo, $this->credentials);
+        $tags->fixTags();
 
     }
 

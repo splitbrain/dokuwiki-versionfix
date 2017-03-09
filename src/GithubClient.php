@@ -46,7 +46,16 @@ class GithubClient
     {
         $response = Client::request($this->apibase . $endpoint, 'GET', $this->options)
             ->send();
-        return json_decode($response->getBody(), true);
+        if ($response->getStatusCode() > 299) {
+            throw new \RuntimeException(
+                'Status ' . $response->getStatusCode() . " GET\n" .
+                $this->apibase . $endpoint . "\n" .
+                $response->getBody()->getContents(),
+                $response->getStatusCode()
+            );
+        }
+
+        return json_decode($response->getBody()->getContents(), true);
     }
 
     /**
@@ -54,15 +63,26 @@ class GithubClient
      *
      * @param string $endpoint
      * @param mixed $data
+     * @param string $method defaults to PUT but some endpoints need POST
      * @return mixed
      */
-    public function write($endpoint, $data)
+    public function write($endpoint, $data, $method = 'PUT')
     {
-        die('disabled github');
-        $response = Client::request($this->apibase . $endpoint, 'POST', $this->options)
+
+        $response = Client::request($this->apibase . $endpoint, $method, $this->options)
             ->withJson($data)
             ->send();
-        return json_decode($response->getBody(), true);
+
+        if ($response->getStatusCode() > 299) {
+            throw new \RuntimeException(
+                'Status ' . $response->getStatusCode() . " $method\n" .
+                $this->apibase . $endpoint . "\n" .
+                $response->getBody()->getContents(),
+                $response->getStatusCode()
+            );
+        }
+
+        return json_decode($response->getBody()->getContents(), true);
     }
 
 
