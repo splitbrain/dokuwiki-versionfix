@@ -23,6 +23,7 @@ class DokuwikiClient
         $this->user = $user;
         $this->pass = $pass;
         $this->options['cookie_jar'] = new CookieJar();
+        $this->options['follow_redirects'] = 3;
     }
 
     /**
@@ -86,6 +87,17 @@ class DokuwikiClient
     {
         $response = Client::request('https://www.dokuwiki.org/' . $page . '?do=export_raw', 'GET', $this->options)
             ->send();
+
+
+        if ($response->getStatusCode() > 299) {
+            throw new \RuntimeException(
+                'Status ' . $response->getStatusCode() . " GET\n" .
+                'https://www.dokuwiki.org/' . $page . '?do=export_raw'."\n" .
+                $response->getBody()->getContents(),
+                $response->getStatusCode()
+            );
+        }
+
         return $response->getBody()->getContents();
     }
 
@@ -104,8 +116,18 @@ class DokuwikiClient
             'p' => $this->pass
         );
         $response = Client::request('https://www.dokuwiki.org/doku.php', 'POST', $this->options)
-            ->withQuery($data)
+            ->withFormParam($data)
             ->send();
+
+        if ($response->getStatusCode() > 299) {
+            throw new \RuntimeException(
+                'Status ' . $response->getStatusCode() . " POST\n" .
+                "https://www.dokuwiki.org/doku.php\n" .
+                $response->getBody()->getContents(),
+                $response->getStatusCode()
+            );
+        }
+
 
         if (!preg_match('/<input type="hidden" name="sectok" value="([0-9a-f]{32})" \/>/', $response->getBody()->getContents(), $m)) {
             throw new \RuntimeException('Failed to open extension page for editing. Might be locked or your credentials are wrong.');
@@ -122,8 +144,17 @@ class DokuwikiClient
             'do' => 'save',
         );
         $response = Client::request('https://www.dokuwiki.org/doku.php', 'POST', $this->options)
-            ->withQuery($data)
+            ->withFormParam($data)
             ->send();
+
+        if ($response->getStatusCode() > 299) {
+            throw new \RuntimeException(
+                'Status ' . $response->getStatusCode() . " POST\n" .
+                "https://www.dokuwiki.org/doku.php\n" .
+                $response->getBody()->getContents(),
+                $response->getStatusCode()
+            );
+        }
 
         if (preg_match('/<div class="error">(.*?)(<\/div>)/', $response->getBody()->getContents(), $m)) {
             throw new \RuntimeException('Seems like something went wrong on editing the page ' . $page . '. Error was: ' . $m[1]);
