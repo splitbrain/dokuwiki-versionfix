@@ -109,7 +109,7 @@ class Tags
             $versions[$version] = $sha;
         }
 
-        krsort($versions);
+        ksort($versions);
         return $versions;
     }
 
