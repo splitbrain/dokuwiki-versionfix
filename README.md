@@ -19,7 +19,7 @@ Yes, all of this is completely automatic. You could even set it up as a cronjob.
 ## Requirements
 
 * PHP 5.6 or higher and [composer](https://getcomposer.org/)
-* your plugins must have the gituhb repository listed at dokuwiki.org
+* your plugins must have the github repository listed at dokuwiki.org
 * your plugins must use the ``master`` branch as the means of distributing the most current version
 * a user account at dokuwiki.org
 
