@@ -67,11 +67,15 @@ class VersionFixCLI extends CLI
      */
     protected function fixVersion($repoinfo)
     {
-        $extension = new Extension($this, $repoinfo, $this->credentials);
-        $extension->fixVersion();
-
-        $tags = new Tags($this, $repoinfo, $this->credentials);
-        $tags->fixTags();
+        try {
+            $extension = new Extension($this, $repoinfo, $this->credentials);
+            $extension->fixVersion();
+            $tags = new Tags($this, $repoinfo, $this->credentials);
+            $tags->fixTags();
+        } catch (\Exception $e) {
+            $this->error($e->getMessage());
+            $this->debug($e->getTraceAsString());
+        }
 
     }
 
