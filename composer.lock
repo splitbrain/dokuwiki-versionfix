@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0b07c410ad2b110181e24cedf1a6c027",
+    "content-hash": "d183d4800d92ef6f34e960acdd7103fd",
     "packages": [
         {
             "name": "psr/http-message",
@@ -57,17 +57,17 @@
             "time": "2016-08-06T14:39:51+00:00"
         },
         {
-            "name": "ptcong/easyrequest",
-            "version": "1.0.6",
+            "name": "rsong/phprequest",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/ptcong/easyrequest.git",
-                "reference": "f5c87818e961a9eed50047352d1bf546ca562f86"
+                "url": "https://github.com/rsonghuster/phprequest.git",
+                "reference": "31979f796daceb178d5b573d9875410924445095"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ptcong/easyrequest/zipball/f5c87818e961a9eed50047352d1bf546ca562f86",
-                "reference": "f5c87818e961a9eed50047352d1bf546ca562f86",
+                "url": "https://api.github.com/repos/rsonghuster/phprequest/zipball/31979f796daceb178d5b573d9875410924445095",
+                "reference": "31979f796daceb178d5b573d9875410924445095",
                 "shasum": ""
             },
             "require": {
@@ -89,9 +89,8 @@
             ],
             "authors": [
                 {
-                    "name": "Phan Thanh Cong",
-                    "email": "ptcong90@gmail.com",
-                    "homepage": "http://ptcong.com"
+                    "name": "rsong",
+                    "email": "ls_huster@163.com"
                 }
             ],
             "description": "A light weight PHP http client implements PSR7, use socket/curl for sending requests.",
@@ -103,20 +102,20 @@
                 "php http client",
                 "request"
             ],
-            "time": "2016-12-04T14:06:46+00:00"
+            "time": "2018-08-02T11:05:40+00:00"
         },
         {
             "name": "splitbrain/php-cli",
-            "version": "1.1.2",
+            "version": "1.1.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/splitbrain/php-cli.git",
-                "reference": "1d6f0bf9eccbfd79d1f4d185ef27573601185c23"
+                "reference": "b7be3726872547253dd0bd61098fa9f634c33555"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/splitbrain/php-cli/zipball/1d6f0bf9eccbfd79d1f4d185ef27573601185c23",
-                "reference": "1d6f0bf9eccbfd79d1f4d185ef27573601185c23",
+                "url": "https://api.github.com/repos/splitbrain/php-cli/zipball/b7be3726872547253dd0bd61098fa9f634c33555",
+                "reference": "b7be3726872547253dd0bd61098fa9f634c33555",
                 "shasum": ""
             },
             "require": {
@@ -154,7 +153,7 @@
                 "optparse",
                 "terminal"
             ],
-            "time": "2018-02-02T08:46:12+00:00"
+            "time": "2019-10-16T07:31:14+00:00"
         }
     ],
     "packages-dev": [],
@@ -164,5 +163,6 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "1.1.0"
 }
