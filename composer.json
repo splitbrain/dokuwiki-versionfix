@@ -9,7 +9,7 @@
     ],
     "require": {
         "splitbrain/php-cli": "^1.0",
-        "ptcong/easyrequest": "^1.0"
+        "rsong/phprequest": "^1.0"
     },
     "autoload": {
         "psr-4": {

@@ -35,9 +35,9 @@ class DokuwikiClient
     public static function getRepoData($identifier)
     {
         if (strpos($identifier, '@') !== false) {
-            $url = 'http://www.dokuwiki.org/lib/plugins/pluginrepo/api.php?mail[]=' . md5(strtolower($identifier));
+            $url = 'https://www.dokuwiki.org/lib/plugins/pluginrepo/api.php?mail[]=' . md5(strtolower($identifier));
         } else {
-            $url = 'http://www.dokuwiki.org/lib/plugins/pluginrepo/api.php?ext[]=' . $identifier;
+            $url = 'https://www.dokuwiki.org/lib/plugins/pluginrepo/api.php?ext[]=' . $identifier;
         }
 
 
@@ -142,6 +142,8 @@ class DokuwikiClient
             'summary' => 'version upped',
             'sectok' => $sectoken,
             'do' => 'save',
+            'u' => $this->user,
+            'p' => $this->pass
         );
         $response = Client::request('https://www.dokuwiki.org/doku.php', 'POST', $this->options)
             ->withFormParam($data)
