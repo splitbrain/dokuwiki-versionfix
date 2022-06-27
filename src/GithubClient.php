@@ -6,8 +6,7 @@ use EasyRequest\Client;
 
 class GithubClient
 {
-
-    protected $options = array();
+    protected $guzzle;
     protected $apibase;
 
     /**
@@ -18,10 +17,10 @@ class GithubClient
      */
     public function __construct($user, $key)
     {
-        $this->options['auth'] = "$user:$key";
-        $this->options['header'] = array(
-            'Accept' => 'application/vnd.github.v3+json'
-        );
+        $this->guzzle = new \GuzzleHttp\Client([
+            'auth' => [$user, $key],
+            'headers' => ['Accept' => 'application/vnd.github.v3+json'],
+        ]);
     }
 
     /**
@@ -44,8 +43,7 @@ class GithubClient
      */
     public function read($endpoint)
     {
-        $response = Client::request($this->apibase . $endpoint, 'GET', $this->options)
-            ->send();
+        $response = $this->guzzle->get($this->apibase . $endpoint);
         if ($response->getStatusCode() > 299) {
             throw new \RuntimeException(
                 'Status ' . $response->getStatusCode() . " GET\n" .
@@ -69,9 +67,9 @@ class GithubClient
     public function write($endpoint, $data, $method = 'PUT')
     {
 
-        $response = Client::request($this->apibase . $endpoint, $method, $this->options)
-            ->withJson($data)
-            ->send();
+        $response = $this->guzzle->request($method, $this->apibase . $endpoint, [
+            'json' => $data
+        ]);
 
         if ($response->getStatusCode() > 299) {
             throw new \RuntimeException(

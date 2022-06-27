@@ -2,15 +2,15 @@
 
 namespace splitbrain\DokuWikiVersionFix;
 
-use EasyRequest\Client;
-use EasyRequest\Cookie\CookieJar;
+
+use GuzzleHttp\Client;
 
 class DokuwikiClient
 {
 
     protected $user;
     protected $pass;
-    protected $options = array();
+    protected $guzzle;
 
     /**
      * DokuwikiClient constructor.
@@ -22,8 +22,7 @@ class DokuwikiClient
     {
         $this->user = $user;
         $this->pass = $pass;
-        $this->options['cookie_jar'] = new CookieJar();
-        $this->options['follow_redirects'] = 3;
+        $this->guzzle = new Client(['cookies' => true]);
     }
 
     /**
@@ -34,6 +33,9 @@ class DokuwikiClient
      */
     public static function getRepoData($identifier)
     {
+        // anonymous request to the API
+        $guzzle = new Client();
+
         if (strpos($identifier, '@') !== false) {
             $url = 'https://www.dokuwiki.org/lib/plugins/pluginrepo/api.php?mail[]=' . md5(strtolower($identifier));
         } else {
@@ -41,8 +43,7 @@ class DokuwikiClient
         }
 
 
-        $response = Client::request($url, 'GET')
-            ->send();
+        $response = $guzzle->get($url);
         $data = json_decode($response->getBody()->getContents(), true);
 
         $extensions = array();
@@ -85,20 +86,19 @@ class DokuwikiClient
      */
     public function read($page)
     {
-        $response = Client::request('https://www.dokuwiki.org/' . $page . '?do=export_raw', 'GET', $this->options)
-            ->send();
-
+        $response = $this->guzzle->get('https://www.dokuwiki.org/' . $page . '?do=export_raw');
+        $body = $response->getBody()->getContents();
 
         if ($response->getStatusCode() > 299) {
             throw new \RuntimeException(
                 'Status ' . $response->getStatusCode() . " GET\n" .
-                'https://www.dokuwiki.org/' . $page . '?do=export_raw'."\n" .
-                $response->getBody()->getContents(),
+                'https://www.dokuwiki.org/' . $page . '?do=export_raw' . "\n" .
+                $body,
                 $response->getStatusCode()
             );
         }
 
-        return $response->getBody()->getContents();
+        return $body;
     }
 
     /**
@@ -106,59 +106,57 @@ class DokuwikiClient
      *
      * @param string $page
      * @param string $content
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function write($page, $content)
     {
-        $data = array(
-            'id' => $page,
-            'do' => 'edit',
-            'u' => $this->user,
-            'p' => $this->pass
-        );
-        $response = Client::request('https://www.dokuwiki.org/doku.php', 'POST', $this->options)
-            ->withFormParam($data)
-            ->send();
+        $response = $this->guzzle->post('https://www.dokuwiki.org/doku.php', [
+            'form_params' => [
+                'id' => $page,
+                'do' => 'edit',
+                'u' => $this->user,
+                'p' => $this->pass
+            ]
+        ]);
+        $body = $response->getBody()->getContents();
 
         if ($response->getStatusCode() > 299) {
             throw new \RuntimeException(
                 'Status ' . $response->getStatusCode() . " POST\n" .
                 "https://www.dokuwiki.org/doku.php\n" .
-                $response->getBody()->getContents(),
+                $body,
                 $response->getStatusCode()
             );
         }
 
-
-        if (!preg_match('/<input type="hidden" name="sectok" value="([0-9a-f]{32})" \/>/', $response->getBody()->getContents(), $m)) {
+        if (!preg_match('/<input type="hidden" name="sectok" value="([0-9a-f]{32})" \/>/', $body, $m)) {
             throw new \RuntimeException('Failed to open extension page for editing. Might be locked or your credentials are wrong.');
         }
         $sectoken = $m[1];
 
-        $data = array(
-            'id' => $page,
-            'prefix' => '',
-            'suffix' => '',
-            'wikitext' => $content,
-            'summary' => 'version upped',
-            'sectok' => $sectoken,
-            'do' => 'save',
-            'u' => $this->user,
-            'p' => $this->pass
-        );
-        $response = Client::request('https://www.dokuwiki.org/doku.php', 'POST', $this->options)
-            ->withFormParam($data)
-            ->send();
+        $response = $this->guzzle->post('https://www.dokuwiki.org/doku.php', [
+            'form_params' => [
+                'id' => $page,
+                'prefix' => '',
+                'suffix' => '',
+                'wikitext' => $content,
+                'summary' => 'version upped',
+                'sectok' => $sectoken,
+                'do' => 'save',
+            ]
+        ]);
+        $body = $response->getBody()->getContents();
 
         if ($response->getStatusCode() > 299) {
             throw new \RuntimeException(
                 'Status ' . $response->getStatusCode() . " POST\n" .
                 "https://www.dokuwiki.org/doku.php\n" .
-                $response->getBody()->getContents(),
+                $body,
                 $response->getStatusCode()
             );
         }
 
-        if (preg_match('/<div class="error">(.*?)(<\/div>)/', $response->getBody()->getContents(), $m)) {
+        if (preg_match('/<div class="error">(.*?)(<\/div>)/', $body, $m)) {
             throw new \RuntimeException('Seems like something went wrong on editing the page ' . $page . '. Error was: ' . $m[1]);
         }
     }
@@ -169,12 +167,12 @@ class DokuwikiClient
      * If $lower is set to true all hash keys are converted to
      * lower case.
      *
-     * @author Harry Fuecks <hfuecks@gmail.com>
-     * @author Andreas Gohr <andi@splitbrain.org>
-     * @author Gina Haeussge <gina@foosel.net>
      * @param string[] $lines
      * @param bool $lower
      * @return array
+     * @author Harry Fuecks <hfuecks@gmail.com>
+     * @author Andreas Gohr <andi@splitbrain.org>
+     * @author Gina Haeussge <gina@foosel.net>
      */
     public static function linesToHash($lines, $lower = false)
     {

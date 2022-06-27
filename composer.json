@@ -9,7 +9,8 @@
     ],
     "require": {
         "splitbrain/php-cli": "^1.0",
-        "rsong/phprequest": "^1.0"
+        "guzzlehttp/guzzle": "^7.0",
+        "ext-json": "*"
     },
     "autoload": {
         "psr-4": {
