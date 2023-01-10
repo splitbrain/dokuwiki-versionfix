@@ -113,7 +113,7 @@ class Extension
         $content = $this->dokuwiki->read($this->page);
 
         $current = preg_quote($current, '/');
-        $newcontent = preg_replace('/(\n---- (?:plugin|template) ----.*?(?:lastupdate *: *))' . $current . '/s', '${1}' . $target, $content);
+        $newcontent = preg_replace('/(\n---- (?:plugin|template) ----.*?(?:lastupdate(?:_dt)? *: *))' . $current . '/s', '${1}' . $target, $content);
         if ($content == $newcontent) {
             $this->cli->error('Failed to adjust date in dokuwiki page. Date might differ from cached repo data.');
             return;
