@@ -186,7 +186,7 @@ class DokuwikiClient
             $line = str_replace('\\#', '#', $line);
             $line = trim($line);
             if (empty($line)) continue;
-            $line = preg_split('/\s+/', $line, 2);
+            $line = array_pad(preg_split('/\s+/', $line, 2), 2, '');
             // Build the associative array
             if ($lower) {
                 $conf[strtolower($line[0])] = $line[1];
