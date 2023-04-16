@@ -2,8 +2,6 @@
 
 namespace splitbrain\DokuWikiVersionFix;
 
-use EasyRequest\Client;
-
 class GithubClient
 {
     protected $guzzle;
