@@ -1,4 +1,4 @@
-#!/usr/bin/php
+#!/usr/bin/env php
 <?php
 use splitbrain\DokuWikiVersionFix\DokuwikiClient;
 use splitbrain\DokuWikiVersionFix\Extension;
