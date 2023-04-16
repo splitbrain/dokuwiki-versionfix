@@ -6,7 +6,7 @@ use splitbrain\DokuWikiVersionFix\Tags;
 use splitbrain\phpcli\CLI;
 use splitbrain\phpcli\Options;
 
-require 'vendor/autoload.php';
+require __DIR__ . '/vendor/autoload.php';
 
 /**
  * Easily update plugin versions
