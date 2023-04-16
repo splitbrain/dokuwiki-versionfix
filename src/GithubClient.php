@@ -10,7 +10,7 @@ class GithubClient
     protected $apibase;
 
     /**
-     * Github constructor.
+     * GitHub constructor.
      *
      * @param string $user API user
      * @param string $key API key
