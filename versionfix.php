@@ -1,4 +1,4 @@
-#!/usr/bin/php
+#!/usr/bin/env php
 <?php
 use splitbrain\DokuWikiVersionFix\DokuwikiClient;
 use splitbrain\DokuWikiVersionFix\Extension;
@@ -6,7 +6,7 @@ use splitbrain\DokuWikiVersionFix\Tags;
 use splitbrain\phpcli\CLI;
 use splitbrain\phpcli\Options;
 
-require 'vendor/autoload.php';
+require __DIR__ . '/vendor/autoload.php';
 
 /**
  * Easily update plugin versions

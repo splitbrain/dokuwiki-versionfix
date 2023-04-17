@@ -2,15 +2,13 @@
 
 namespace splitbrain\DokuWikiVersionFix;
 
-use EasyRequest\Client;
-
 class GithubClient
 {
     protected $guzzle;
-    protected $apibase;
+    protected $apiBase;
 
     /**
-     * Github constructor.
+     * GitHub constructor.
      *
      * @param string $user API user
      * @param string $key API key
@@ -31,7 +29,7 @@ class GithubClient
      */
     public function setRepo($user, $repo)
     {
-        $this->apibase = "https://api.github.com/repos/$user/$repo/";
+        $this->apiBase = "https://api.github.com/repos/$user/$repo/";
     }
 
 
@@ -43,11 +41,11 @@ class GithubClient
      */
     public function read($endpoint)
     {
-        $response = $this->guzzle->get($this->apibase . $endpoint);
+        $response = $this->guzzle->get($this->apiBase . $endpoint);
         if ($response->getStatusCode() > 299) {
             throw new \RuntimeException(
                 'Status ' . $response->getStatusCode() . " GET\n" .
-                $this->apibase . $endpoint . "\n" .
+                $this->apiBase . $endpoint . "\n" .
                 $response->getBody()->getContents(),
                 $response->getStatusCode()
             );
@@ -67,14 +65,14 @@ class GithubClient
     public function write($endpoint, $data, $method = 'PUT')
     {
 
-        $response = $this->guzzle->request($method, $this->apibase . $endpoint, [
+        $response = $this->guzzle->request($method, $this->apiBase . $endpoint, [
             'json' => $data
         ]);
 
         if ($response->getStatusCode() > 299) {
             throw new \RuntimeException(
                 'Status ' . $response->getStatusCode() . " $method\n" .
-                $this->apibase . $endpoint . "\n" .
+                $this->apiBase . $endpoint . "\n" .
                 $response->getBody()->getContents(),
                 $response->getStatusCode()
             );
