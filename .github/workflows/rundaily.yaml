@@ -8,6 +8,7 @@ on:
 jobs:
   run-daily:
     runs-on: ubuntu-latest
+    if: ${{ vars.CHECK != '' }}
 
     steps:
       - name: Checkout repository
