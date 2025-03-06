@@ -85,6 +85,25 @@ class VersionFixCLI extends CLI
      */
     protected function loadCredentials()
     {
+        // try environment variables first
+        $creds = [
+            'dokuwiki_user' => getenv('DOKUWIKI_USER'),
+            'dokuwiki_pass' => getenv('DOKUWIKI_PASS'),
+            'github_user' => getenv('GITHUB_USER'),
+            'github_key' => getenv('GITHUB_KEY'),
+        ];
+
+        if (
+            !empty($creds['dokuwiki_user']) &&
+            !empty($creds['dokuwiki_pass']) &&
+            !empty($creds['github_user']) &&
+            !empty($creds['github_key'])
+        ) {
+            $this->credentials = $creds;
+            return;
+        }
+
+        // try config file
         $home = getenv("HOME");
         $conf = "$home/.dwversionfix.conf";
         $this->info('Searching for credentials in ' . $conf);
