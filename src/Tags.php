@@ -75,7 +75,7 @@ class Tags
         }
 
         foreach ($response as $info) {
-            if (!preg_match('/^refs\/tags\/(.+)$/', $info['ref'], $m)) continue;
+            if (!preg_match('/^refs\/tags\/(\d\d\d\d-\d\d-\d\d.*)$/', $info['ref'], $m)) continue;
             $tags[$m[1]] = $info['object']['sha'];
         }
 
