@@ -51,12 +51,13 @@ class VersionFixCLI extends CLI
         $this->loadCredentials();
 
         $args = $options->getArgs();
-        $arg = array_shift($args);
-        $extensions = DokuwikiClient::getRepoData($arg);
-        $this->success('found ' . count($extensions) . ' matching extensions');
-        foreach ($extensions as $extension) {
-            $this->info('Checking ' . $extension['page'] . ' --------------------------');
-            $this->fixVersion($extension);
+        foreach ($args as $arg) {
+            $extensions = DokuwikiClient::getRepoData($arg);
+            $this->success('found ' . count($extensions) . ' matching extensions');
+            foreach ($extensions as $extension) {
+                $this->info('Checking ' . $extension['page'] . ' --------------------------');
+                $this->fixVersion($extension);
+            }
         }
     }
 
