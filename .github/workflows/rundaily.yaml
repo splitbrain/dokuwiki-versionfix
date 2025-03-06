@@ -1,0 +1,41 @@
+name: Run Daily
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 23 * * *'
+
+jobs:
+  run-daily:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+
+      - name: Install Composer dependencies
+        run: composer install
+
+      - name: Run versionfix script
+        env:
+          GITHUB_USER: ${{ secrets.GH_USER }}
+          GITHUB_KEY: ${{ secrets.GH_KEY }}
+          DOKUWIKI_USER: ${{ secrets.DOKUWIKI_USER }}
+          DOKUWIKI_PASS: ${{ secrets.DOKUWIKI_PASS }}
+        run: php versionfix.php ${{ vars.CHECK }}
+
+
+  workflow-keepalive:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - uses: liskin/gh-workflow-keepalive@v1
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
