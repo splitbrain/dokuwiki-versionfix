@@ -37,6 +37,8 @@ class Tags
     public function fixTags()
     {
         $tags = $this->fetchTags();
+        $this->cli->debug('Found tags:');
+        $this->cli->debug(print_r($tags, true));
 
         if (count($tags)) {
             $newest = reset($tags);
@@ -54,9 +56,9 @@ class Tags
     }
 
     /**
-     * Get the tags for this repo that are in YYYY-MM-DD format
+     * Get the tags for this repo
      *
-     * @return array date => sha1
+     * @return array tag => sha1
      */
     protected function fetchTags()
     {
@@ -73,7 +75,7 @@ class Tags
         }
 
         foreach ($response as $info) {
-            if (!preg_match('/^refs\/tags\/(\d\d\d\d-\d\d-\d\d)$/', $info['ref'], $m)) continue;
+            if (!preg_match('/^refs\/tags\/(.+)$/', $info['ref'], $m)) continue;
             $tags[$m[1]] = $info['object']['sha'];
         }
 
@@ -126,6 +128,7 @@ class Tags
             'ref' => 'refs/tags/' . $version
         );
 
+        $this->cli->debug("Tagging $sha with $version");
         $this->github->write('git/refs', $data, 'POST');
         $this->cli->success("Tagged $sha with $version");
     }
