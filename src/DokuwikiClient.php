@@ -22,7 +22,12 @@ class DokuwikiClient
     {
         $this->user = $user;
         $this->pass = $pass;
-        $this->guzzle = new Client(['cookies' => true]);
+        $this->guzzle = new Client([
+            'cookies' => true,
+            'headers' => [
+                'User-Agent' => 'DokuWikiVersionFix/1.0',
+            ]
+        ]);
     }
 
     /**
