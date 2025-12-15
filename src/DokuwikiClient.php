@@ -39,7 +39,11 @@ class DokuwikiClient
     public static function getRepoData($identifier)
     {
         // anonymous request to the API
-        $guzzle = new Client();
+        $guzzle = new Client([
+            'headers' => [
+                'User-Agent' => 'DokuWikiVersionFix/1.0',
+            ]
+        ]);
 
         if (strpos($identifier, '@') !== false) {
             $url = 'https://www.dokuwiki.org/lib/plugins/pluginrepo/api.php?mail[]=' . md5(strtolower($identifier));
